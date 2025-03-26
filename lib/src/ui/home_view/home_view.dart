@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:images_app/src/ui/home_view/tabbar_view/likked_view.dart';
 import 'package:images_app/src/ui/home_view/tabbar_view/suggested_view.dart';
 import 'package:images_app/src/util/colors/app_colors.dart';
 
@@ -12,8 +13,11 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  bool _isVisible = true;
+  final List<bool> _favoriteStatus = List.generate(100, (index) => false);
+  final List<int> _favoriteItems = [];
   final ScrollController _scrollController = ScrollController();
+
+  bool _isVisible = true;
 
   @override
   void initState() {
@@ -22,17 +26,33 @@ class _HomeViewState extends State<HomeView> {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
         if (_isVisible) {
-          _isVisible = false;
-          widget.afterScrollResult(_isVisible);
+          setState(() {
+            _isVisible = false;
+            widget.afterScrollResult(_isVisible);
+          });
         }
       }
 
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
         if (!_isVisible) {
-          _isVisible = true;
-          widget.afterScrollResult(_isVisible);
+          setState(() {
+            _isVisible = true;
+            widget.afterScrollResult(_isVisible);
+          });
         }
+      }
+    });
+  }
+
+  void toggleFavorite(int index) {
+    setState(() {
+      _favoriteStatus[index] = !_favoriteStatus[index];
+
+      if (_favoriteStatus[index]) {
+        _favoriteItems.add(index);
+      } else {
+        _favoriteItems.remove(index);
       }
     });
   }
@@ -72,9 +92,13 @@ class _HomeViewState extends State<HomeView> {
             ];
           },
           body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
-              SuggestedView(),
-              SizedBox(),
+              SuggestedView(
+                favoriteStatus: _favoriteStatus,
+                toggleFavorite: toggleFavorite,
+              ),
+              LikkedView(favoriteItems: _favoriteItems),
               SizedBox(),
             ],
           ),

@@ -16,7 +16,7 @@ class ExploreView extends StatefulWidget {
 
 class _ExploreViewState extends State<ExploreView> {
   var selectedSlideIndex = 0;
-
+  final List<bool> _isFavorite = List.generate(10, (index) => false);
   bool _isVisible = true;
   final ScrollController _scrollController = ScrollController();
 
@@ -42,6 +42,12 @@ class _ExploreViewState extends State<ExploreView> {
           });
         }
       }
+    });
+  }
+
+  void _toggleFavorite(int index) {
+    setState(() {
+      _isFavorite[index] = !_isFavorite[index];
     });
   }
 
@@ -162,8 +168,12 @@ class _ExploreViewState extends State<ExploreView> {
               itemBuilder: (context, index) {
                 return ImageTile(
                   index: index,
+                  onTap: () => _toggleFavorite(index),
+                  icon: _isFavorite[index]
+                      ? Icon(Icons.favorite)
+                      : Icon(Icons.favorite_border_rounded),
                   imageSource:
-                      'https://picsum.photos/300/500?random=img_$index',
+                      'https://picsum.photos/300/500?random1=img_$index',
                   extent: (index % 2) == 0 ? 300 : 150,
                 );
               },

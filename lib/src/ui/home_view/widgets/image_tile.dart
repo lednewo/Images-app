@@ -7,10 +7,14 @@ class ImageTile extends StatelessWidget {
   final String imageSource;
   final int index;
   final double extent;
+  final void Function()? onTap;
+  final Widget icon;
   const ImageTile({
     required this.imageSource,
     required this.index,
     required this.extent,
+    required this.icon,
+    this.onTap,
     super.key,
   });
 
@@ -46,12 +50,10 @@ class ImageTile extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  InkWell(
-                    onTap: () {},
-                    child: Icon(
-                      Icons.favorite_border_outlined,
-                      color: Colors.white,
-                    ),
+                  IconButton(
+                    onPressed: onTap,
+                    icon: icon,
+                    color: Colors.white,
                   )
                 ],
               ),
